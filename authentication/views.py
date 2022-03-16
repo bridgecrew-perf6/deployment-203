@@ -11,17 +11,20 @@ from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.settings import api_settings
 from authentication.models import UserLoginHistory
+from authentication.serializers import UserLogHistorySerializer
 from datetime import datetime
 import requests
+from django.contrib.auth import authenticate, login
+
 
 
 class RegisterUser(viewsets.ModelViewSet):
+    template_name = 'templates/signup.html'
+    serializer_class = UserLogHistorySerializer
 
     def create(self, request, *args, **kwargs):
-        self.request = request
-        post_data = self.request.data
-        username = post_data['username']
-        password = post_data['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         if not username:
             return Response(
                     {
@@ -38,7 +41,7 @@ class RegisterUser(viewsets.ModelViewSet):
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        user = User.objects.create_user(username,password)
+        user = User.objects.create_user(username=username, password=password)
         user.save()
         return Response({"message": 'User created successfully'},status=status.HTTP_200_OK)
 
@@ -46,6 +49,8 @@ class RegisterUser(viewsets.ModelViewSet):
             
 
 class AuthJWTToken(viewsets.ModelViewSet):
+    template_name = 'templates/login.html'
+    serializer_class = UserLogHistorySerializer
     def send_webhook(self):
         self.ip_address = self.request.META.get('REMOTE_ADDR')
         headers = {'Content-type': 'application/json'}
@@ -56,8 +61,9 @@ class AuthJWTToken(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         self.request = request
         post_data = self.request.data
-        username = post_data['username']
-        password = post_data['password']
+        username = self.request.POST.get('username')
+        password = self.request.POST.get('password')
+
         if username:
             try:
                 self.user = User.objects.get(username=username)
@@ -75,8 +81,10 @@ class AuthJWTToken(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
         if password:
-            statuspwd = self.user.check_password(password)
-            if statuspwd:
+            # hashed_password = make_password(password)
+            # statuspwd = check_password(self.user.password, hashed_password)
+            user = authenticate(username=username, password=password)
+            if user:
                 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
                 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
                 payload = jwt_payload_handler(request.user)
@@ -101,3 +109,10 @@ class AuthJWTToken(viewsets.ModelViewSet):
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
+
+
+def login_view(request):
+    return render(request,'login.html',{})
+
+def signup_view(request):
+    return render(request,'signup.html',{})

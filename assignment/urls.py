@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path, re_path
-from authentication.views import AuthJWTToken, RegisterUser
+from authentication.views import AuthJWTToken, RegisterUser, login_view,signup_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('authentication/auth_token', AuthJWTToken.as_view({'post':'create'})),
-    path('authentication/login', RegisterUser.as_view({'post':'create'})),
+    path('auth_token/', AuthJWTToken.as_view({'post':'create'}), name='login_url'),
+    path('authentication/create_user', RegisterUser.as_view({'post':'create'}), name='signup_url'),
+    path('',login_view, name='login_view'),
+    path('signup_view',signup_view, name='signup_view'),
 
 ]
