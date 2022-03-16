@@ -14,18 +14,6 @@ from authentication.models import UserLoginHistory
 from datetime import datetime
 import requests
 
-# def Register(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-#         confirm_password = request.POST.get('confirm_password')
-#         if password == confirm_password:
-#             user = User.objects.create(username=username, password=password)
-#             user.save()
-#         else:
-#             return render(request,'users/register.html',{'messages':"Password doesn't match"})
-
-#     return render(request, 'users/register.html', {'form': form})
 
 class RegisterUser(viewsets.ModelViewSet):
 
@@ -52,7 +40,7 @@ class RegisterUser(viewsets.ModelViewSet):
                 )
         user = User.objects.create_user(username,password)
         user.save()
-        return Response({'message':"user has been created successfully"} ,status=status=status.HTTP_200_OK)
+        return Response({"message": 'User created successfully'},status=status.HTTP_200_OK)
 
 
             
@@ -96,7 +84,7 @@ class AuthJWTToken(viewsets.ModelViewSet):
                 self.send_webhook()
                 userlog = UserLoginHistory.objects.create(user=self.user, ip_address = self.ip_address, created=datetime.now())
                 userlog.save()
-                return Response({'username':username, 'token':token}, status=status=status.HTTP_200_OK)
+                return Response({'username':username, 'token':token},status=status.HTTP_200_OK)
             else:
                 return Response(
                     {
