@@ -25,5 +25,7 @@ urlpatterns = [
     path('authentication/create_user', RegisterUser.as_view({'post':'create'}), name='signup_url'),
     path('',login_view, name='login_view'),
     path('signup_view',signup_view, name='signup_view'),
+    path('accounts/', include('allauth.urls')),
+
 
 ]
