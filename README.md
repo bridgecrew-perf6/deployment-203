@@ -1,5 +1,4 @@
 # deployment
-# deployment
 sudo apt install git
 git clone git@github.com:jainpawan/informds.git
 setup virtual environment Linux: sudo apt-get install virtualenv Mac: chsh -s /bin/bash sudo easy_install pip pip install virtualenv OR brew install virtualenv
