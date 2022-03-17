@@ -1,3 +1,5 @@
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +9,11 @@
     <title>Document</title>
 </head>
 <body>
+    {% if user.is_authenticated %}
+    <p>Welcome, You are logged in as {{ user.username }}</p>
+    Click <a href="accounts/logout">here</a>
+        to signout</p>
+    {% else %}
     <form action="{% url 'login_url' %}" method="post">
         {% csrf_token %}
         <label for="username">Username:</label>
@@ -17,6 +24,8 @@
     </form>
     <p>Don't have an account ? Click <a href="accounts/signup">here</a>
         to signup</p>
+    {% endif %}
+
     
 </body>
 </html>

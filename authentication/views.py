@@ -112,7 +112,8 @@ class AuthJWTToken(viewsets.ModelViewSet):
 
 
 def login_view(request):
-    return render(request,'login.html',{})
+    user = request.user
+    return render(request,'login.html',{'user':user})
 
 def signup_view(request):
     return render(request,'signup.html',{})
